@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour {
 
     Vector3 tempPos;
     Vector3 tempPos1;
+    Vector3 tempPos2;
     private float _randomNumber;
     private bool _runOnce = true;
     
@@ -105,7 +106,13 @@ public class Enemy : MonoBehaviour {
             tempPos1.x -= xSpeed * Time.deltaTime;
             pos = tempPos1;
         }
-
+        if (gameObject.CompareTag("enemy3"))
+        {
+            tempPos2 = pos;
+            tempPos2.y -= (speed*2) * Time.deltaTime;
+            tempPos2.x += (xSpeed *2)* Time.deltaTime;
+            pos = tempPos2;
+        }
     }
     void OnCollisionEnter( Collision coll)
     {

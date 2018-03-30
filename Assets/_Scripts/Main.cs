@@ -27,6 +27,7 @@ public class Main : MonoBehaviour {
         _bndCheck = GetComponent<BoundsCheck>();
         Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
 
+
         //A generic Dictionary with WeaponType as the key 
         WEAP_DICT = new Dictionary<WeaponType, WeaponDefinition>();
         foreach(WeaponDefinition def in weaponDefinitions)
@@ -37,8 +38,8 @@ public class Main : MonoBehaviour {
 	
     public void SpawnEnemy()
     {
-
-        int ndx = Random.Range(0, prefabEnemies.Length);
+        // ndx = pick a random enemy prefab to instantiate
+        int ndx = Random.Range(0, 2); //only the first two enemies are allowed to spawn
         GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
 
         float enemyPadding = enemyDefaultPadding;
@@ -57,8 +58,37 @@ public class Main : MonoBehaviour {
         {
             Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
         }
-        
+        else
+        {
+
+            Invoke("SpawnWave2", 1f / enemySpawnPerSecond); //calls the spawn wave 2 function if it is level 2
+        }
     }
+
+
+    public void SpawnWave2() //spawns the second wave of enemies with new enemies
+    {
+        // ndx = pick a random enemy prefab to instantiate
+        int ndx = Random.Range(0, prefabEnemies.Length);
+        GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
+
+        float enemyPadding = enemyDefaultPadding;
+        if (go.GetComponent<BoundsCheck>() != null)
+        {
+            enemyPadding = Mathf.Abs(go.GetComponent<BoundsCheck>().radius);
+        }
+        Vector3 pos = Vector3.zero;
+        float xMin = -_bndCheck.camWidth + enemyPadding;
+        float xMax = _bndCheck.camWidth - enemyPadding;
+        pos.x = Random.Range(xMin, xMax);
+        pos.y = _bndCheck.camHeight + enemyPadding;
+        go.transform.position = pos;
+
+        
+        Invoke("SpawnWave2", 0.5f);
+       
+    }
+
 
     public void nextLevel() //called from scoremanager script (advances to the next level after a certain amount of score)
     {
