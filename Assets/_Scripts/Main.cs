@@ -16,6 +16,7 @@ public class Main : MonoBehaviour {
 
     private int level = 1;
     private BoundsCheck _bndCheck;
+    private bool destroy = true;
 
     private GameObject[] enemy1;
     private GameObject[] enemy0;
@@ -36,6 +37,7 @@ public class Main : MonoBehaviour {
 	
     public void SpawnEnemy()
     {
+
         int ndx = Random.Range(0, prefabEnemies.Length);
         GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
 

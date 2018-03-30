@@ -38,9 +38,9 @@ public class ScoreScript : MonoBehaviour {
         }
         if (scoreValue > 200 && nextLevel == true)
         {
-            Main.S.nextLevel();
-            _nextLevel.enabled = true;
-            Invoke("DisableText", 5f);
+            Main.S.nextLevel(); // calls the next level
+            _nextLevel.enabled = true; //displays the level 2 text
+            Invoke("DisableText", 6f); //disables the text after 6 seconds
             nextLevel = false;
         }
     }
