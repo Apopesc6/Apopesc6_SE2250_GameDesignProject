@@ -107,6 +107,12 @@ public class Enemy : MonoBehaviour {
             tempPos = pos;
             tempPos.y -= speed * Time.deltaTime;
             pos = tempPos;
+            //makes the enemies appear to rotate
+            float age = Time.time - birthTime;
+            float theta = Mathf.PI * 2 * age / waveFrequency;
+            float sin = Mathf.Sin(theta);
+            Vector3 rot = new Vector3(0, sin * 30, 0);
+            this.transform.rotation = Quaternion.Euler(rot);
         }
         if (gameObject.CompareTag("enemy1"))
         {
@@ -114,11 +120,17 @@ public class Enemy : MonoBehaviour {
             tempPos1.y -= speed * Time.deltaTime;
             tempPos1.x -= xSpeed * Time.deltaTime;
             pos = tempPos1;
+            //makes the enemies appear to rotate
+            float age = Time.time - birthTime;
+            float theta = Mathf.PI * 2 * age / waveFrequency;
+            float sin = Mathf.Sin(theta);
+            Vector3 rot = new Vector3(0, sin * waveRotationY, 0);
+            this.transform.rotation = Quaternion.Euler(rot);
         }
         if (gameObject.CompareTag("enemy3"))
         {
             tempPos2 = pos;
-            tempPos2.y -= (speed*2) * Time.deltaTime;
+            tempPos2.y -= (speed*2.5f) * Time.deltaTime;
             float age = Time.time - birthTime;
             float theta = Mathf.PI * 2 * age / waveFrequency;
             float sin = Mathf.Sin(theta);
