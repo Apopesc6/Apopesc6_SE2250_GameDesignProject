@@ -19,7 +19,9 @@ public class ScoreScript : MonoBehaviour {
     private bool finalLevel = true;
     private bool newGame = true;
 
-	// Use this for initialization
+    private GameObject[] rockets;
+
+    // Use this for initialization
     void Start()
     {
         _YouWin = GameObject.Find("YouWinText").GetComponent<Text>();
@@ -69,6 +71,11 @@ public class ScoreScript : MonoBehaviour {
         }
         if(scoreValue > 10000 && newGame == true)
         {
+            rockets = GameObject.FindGameObjectsWithTag("rocket");
+            for (var i = 0; i < rockets.Length; i++)
+            {
+                Destroy(rockets[i]);
+            }
             _YouWin.enabled = true;
             Main.S.DelayedRestart(2f);
             newGame = false;

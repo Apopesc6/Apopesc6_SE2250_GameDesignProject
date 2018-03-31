@@ -17,6 +17,7 @@ public class Main : MonoBehaviour {
     private int level = 1;
     private BoundsCheck _bndCheck;
     private bool lastLevel = false;
+    private bool gameOver = false;
 
     private GameObject[] enemy1;
     private GameObject[] enemy0;
@@ -120,11 +121,14 @@ public class Main : MonoBehaviour {
         float xMin = -_bndCheck.camWidth + enemyPadding;
         float xMax = _bndCheck.camWidth - enemyPadding;
         pos.x = Random.Range(xMin, xMax);
-        pos.y = _bndCheck.camHeight + 100f;
+        pos.y = _bndCheck.camHeight - 15f;
         go.transform.position = pos;
 
-        
+        if (gameOver == false)
+        {
             Invoke("Rockets", 0.4f); //spawns the rockets
+        }
+            
        
     }
 
@@ -167,6 +171,7 @@ public class Main : MonoBehaviour {
 
     public void DelayedRestart(float delay)
     {
+        gameOver = true;
         //invoke the Restart() method in delay seconds
         Invoke("Restart", delay);
     }
