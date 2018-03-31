@@ -9,6 +9,8 @@ TagManager:
   - enemy1
   - ProjectileHero
   - enemy3
+  - rocket
+  - boss
   layers:
   - Default
   - TransparentFX

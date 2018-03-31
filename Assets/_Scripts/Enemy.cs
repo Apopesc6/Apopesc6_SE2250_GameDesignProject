@@ -140,6 +140,12 @@ public class Enemy : MonoBehaviour {
             Vector3 rot = new Vector3(0, sin * waveRotationY, 0);
             this.transform.rotation = Quaternion.Euler(rot);
         }
+        if (gameObject.CompareTag("rocket"))
+        {
+            tempPos = pos;
+            tempPos.y -= (speed*8) * Time.deltaTime;
+            pos = tempPos;
+        }
     }
     void OnCollisionEnter( Collision coll)
     {

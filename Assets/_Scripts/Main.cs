@@ -16,10 +16,11 @@ public class Main : MonoBehaviour {
 
     private int level = 1;
     private BoundsCheck _bndCheck;
-    private bool destroy = true;
+    private bool lastLevel = false;
 
     private GameObject[] enemy1;
     private GameObject[] enemy0;
+    private GameObject[] enemy2;
 
     void Awake()
     {
@@ -56,11 +57,10 @@ public class Main : MonoBehaviour {
 
         if (level == 1) //spawns enemies only if it is level 1
         {
-            Invoke("SpawnEnemy", 1f / enemySpawnPerSecond);
+            Invoke("SpawnEnemy", 0.7f);
         }
-        else
+        else if (lastLevel == false)
         {
-
             Invoke("SpawnWave2", 1f / enemySpawnPerSecond); //calls the spawn wave 2 function if it is level 2
         }
     }
@@ -69,7 +69,7 @@ public class Main : MonoBehaviour {
     public void SpawnWave2() //spawns the second wave of enemies with new enemies
     {
         // ndx = pick a random enemy prefab to instantiate
-        int ndx = Random.Range(0, prefabEnemies.Length);
+        int ndx = Random.Range(0, 3);
         GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
 
         float enemyPadding = enemyDefaultPadding;
@@ -84,11 +84,49 @@ public class Main : MonoBehaviour {
         pos.y = _bndCheck.camHeight + enemyPadding;
         go.transform.position = pos;
 
-        
-        Invoke("SpawnWave2", 0.5f);
-       
+        if (lastLevel == false)
+        {
+            Invoke("SpawnWave2", 0.3f); //spawns wave 2 enemies only if its level 2
+        }
+        else if (lastLevel == true)
+        {
+            Invoke("Boss", 0.3f);
+        }
     }
 
+    public void Boss()
+    {
+        GameObject go = Instantiate<GameObject>(prefabEnemies[4]);
+        Vector3 pos = Vector3.zero;
+        pos.x = 0.3f;
+        pos.y = 34f;
+        go.transform.position = pos;
+
+        Invoke("Rockets", 0.6f); //spawns the rockets
+    }
+
+    public void Rockets() //spawns the rockets coming out of the boss
+    {
+        // ndx = pick a random enemy prefab to instantiate
+        int ndx = Random.Range(3, 4);
+        GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
+
+        float enemyPadding = enemyDefaultPadding;
+        if (go.GetComponent<BoundsCheck>() != null)
+        {
+            enemyPadding = Mathf.Abs(go.GetComponent<BoundsCheck>().radius);
+        }
+        Vector3 pos = Vector3.zero;
+        float xMin = -_bndCheck.camWidth + enemyPadding;
+        float xMax = _bndCheck.camWidth - enemyPadding;
+        pos.x = Random.Range(xMin, xMax);
+        pos.y = _bndCheck.camHeight + 100f;
+        go.transform.position = pos;
+
+        
+            Invoke("Rockets", 0.4f); //spawns the rockets
+       
+    }
 
     public void nextLevel() //called from scoremanager script (advances to the next level after a certain amount of score)
     {
@@ -104,6 +142,28 @@ public class Main : MonoBehaviour {
             Destroy(enemy0[i]);
         }
     }
+
+
+    public void finalBoss()
+    {
+        lastLevel=true; //makes last level = true
+        enemy1 = GameObject.FindGameObjectsWithTag("enemy1");
+        for (var i = 0; i < enemy1.Length; i++)  //clears all of the enemies off the screen
+        {
+            Destroy(enemy1[i]);
+        }
+        enemy0 = GameObject.FindGameObjectsWithTag("enemy0");
+        for (var i = 0; i < enemy0.Length; i++)
+        {
+            Destroy(enemy0[i]);
+        }
+        enemy2 = GameObject.FindGameObjectsWithTag("enemy3");
+        for (var i = 0; i < enemy2.Length; i++)
+        {
+            Destroy(enemy2[i]);
+        }
+    }
+
 
     public void DelayedRestart(float delay)
     {
