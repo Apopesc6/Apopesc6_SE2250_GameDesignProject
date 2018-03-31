@@ -16,7 +16,15 @@ public class Enemy : MonoBehaviour {
     Vector3 tempPos2;
     private float _randomNumber;
     private bool _runOnce = true;
-    
+
+    //Variables for new movement of enemy 3
+
+    public float waveFrequency = 2;
+    public float waveWidth = 4;
+    public float waveRotationY = 45;
+    private float birthTime;
+    private float x0;
+
     // new variables to make the enemy blink red when shot
     public float showDamageDur = 0.1f;
     public float dmgDone;
@@ -25,11 +33,11 @@ public class Enemy : MonoBehaviour {
     public Color[] colors;
 
     private BoundsCheck _bndCheck;
-
+    
     void Awake()
     {
         _bndCheck = GetComponent<BoundsCheck>();
-        //code using utils to get the materials
+        //code using utils to get the materials (used to show damage later)
         materials = Utils.getAllMaterials(gameObject);
         colors = new Color[materials.Length];
         for (int i = 0; i < materials.Length; i++)
@@ -47,8 +55,9 @@ public class Enemy : MonoBehaviour {
         {
             xSpeed = xSpeed * -1;
         }
-        
 
+        birthTime = Time.time;
+        x0 = pos.x;
 	}
     public Vector3 pos
     {
@@ -110,8 +119,14 @@ public class Enemy : MonoBehaviour {
         {
             tempPos2 = pos;
             tempPos2.y -= (speed*2) * Time.deltaTime;
-            tempPos2.x += (xSpeed *2)* Time.deltaTime;
+            float age = Time.time - birthTime;
+            float theta = Mathf.PI * 2 * age / waveFrequency;
+            float sin = Mathf.Sin(theta);
+            tempPos2.x = x0 + waveWidth * sin;
             pos = tempPos2;
+
+            Vector3 rot = new Vector3(0, sin * waveRotationY, 0);
+            this.transform.rotation = Quaternion.Euler(rot);
         }
     }
     void OnCollisionEnter( Collision coll)
