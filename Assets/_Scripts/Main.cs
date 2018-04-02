@@ -14,6 +14,8 @@ public class Main : MonoBehaviour {
     public float enemyDefaultPadding = 1.5f;
     public WeaponDefinition[] weaponDefinitions;
 
+	public GameObject prefabPowerUp;
+
     private int level = 1;
     private BoundsCheck _bndCheck;
     private bool lastLevel = false;
@@ -23,7 +25,32 @@ public class Main : MonoBehaviour {
     private GameObject[] enemy0;
     private GameObject[] enemy2;
 
-    void Awake()
+	public void shipDestroyed( Enemy e )
+	{
+		// Potentially generate a PowerUp
+		if (Random.value < 0.2)
+		{ 
+			WeaponType[] powerUpFrequency = new WeaponType[] {WeaponType.boost,WeaponType.clear,WeaponType.fastShoot};
+			WeaponType puType = powerUpFrequency[Random.Range(0,powerUpFrequency.Length)];
+			GameObject go = Instantiate(prefabPowerUp) as GameObject;
+			PowerUp pu = go.GetComponent<PowerUp>();
+			pu.SetType(puType); // f
+			switch (pu.type) {
+			case WeaponType.boost:
+				pu.letter.text = "B";
+				break;
+			case WeaponType.fastShoot:
+				pu.letter.text = "F";
+				break;
+			case WeaponType.clear:
+				pu.letter.text = "C";
+				break;
+			}
+			pu.transform.position = e.transform.position;
+		}
+	}
+
+	void Awake()
     {
         S = this;
         _bndCheck = GetComponent<BoundsCheck>();
@@ -40,22 +67,24 @@ public class Main : MonoBehaviour {
 	
     public void SpawnEnemy()
     {
-        // ndx = pick a random enemy prefab to instantiate
-        int ndx = Random.Range(0, 2); //only the first two enemies are allowed to spawn
-        GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
-
-        float enemyPadding = enemyDefaultPadding;
-        if(go.GetComponent<BoundsCheck>() != null)
+        if (level == 1)
         {
-            enemyPadding = Mathf.Abs(go.GetComponent<BoundsCheck>().radius);
-        }
-        Vector3 pos = Vector3.zero;
-        float xMin = -_bndCheck.camWidth + enemyPadding;
-        float xMax = _bndCheck.camWidth - enemyPadding;
-        pos.x = Random.Range(xMin, xMax);
-        pos.y = _bndCheck.camHeight + enemyPadding;
-        go.transform.position = pos;
+            // ndx = pick a random enemy prefab to instantiate
+            int ndx = Random.Range(0, 2); //only the first two enemies are allowed to spawn
+            GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
 
+            float enemyPadding = enemyDefaultPadding;
+            if (go.GetComponent<BoundsCheck>() != null)
+            {
+                enemyPadding = Mathf.Abs(go.GetComponent<BoundsCheck>().radius);
+            }
+            Vector3 pos = Vector3.zero;
+            float xMin = -_bndCheck.camWidth + enemyPadding;
+            float xMax = _bndCheck.camWidth - enemyPadding;
+            pos.x = Random.Range(xMin, xMax);
+            pos.y = _bndCheck.camHeight + enemyPadding;
+            go.transform.position = pos;
+        }
         if (level == 1) //spawns enemies only if it is level 1
         {
             Invoke("SpawnEnemy", 0.7f);
@@ -69,22 +98,24 @@ public class Main : MonoBehaviour {
 
     public void SpawnWave2() //spawns the second wave of enemies with new enemies
     {
-        // ndx = pick a random enemy prefab to instantiate
-        int ndx = Random.Range(0, 3);
-        GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
-
-        float enemyPadding = enemyDefaultPadding;
-        if (go.GetComponent<BoundsCheck>() != null)
+        if (lastLevel == false)
         {
-            enemyPadding = Mathf.Abs(go.GetComponent<BoundsCheck>().radius);
-        }
-        Vector3 pos = Vector3.zero;
-        float xMin = -_bndCheck.camWidth + enemyPadding;
-        float xMax = _bndCheck.camWidth - enemyPadding;
-        pos.x = Random.Range(xMin, xMax);
-        pos.y = _bndCheck.camHeight + enemyPadding;
-        go.transform.position = pos;
+            // ndx = pick a random enemy prefab to instantiate
+            int ndx = Random.Range(0, 3);
+            GameObject go = Instantiate<GameObject>(prefabEnemies[ndx]);
 
+            float enemyPadding = enemyDefaultPadding;
+            if (go.GetComponent<BoundsCheck>() != null)
+            {
+                enemyPadding = Mathf.Abs(go.GetComponent<BoundsCheck>().radius);
+            }
+            Vector3 pos = Vector3.zero;
+            float xMin = -_bndCheck.camWidth + enemyPadding;
+            float xMax = _bndCheck.camWidth - enemyPadding;
+            pos.x = Random.Range(xMin, xMax);
+            pos.y = _bndCheck.camHeight + enemyPadding;
+            go.transform.position = pos;
+        }
         if (lastLevel == false)
         {
             Invoke("SpawnWave2", 0.3f); //spawns wave 2 enemies only if its level 2

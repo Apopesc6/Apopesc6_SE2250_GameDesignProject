@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour {
     Vector3 tempPos2;
     private float _randomNumber;
     private bool _runOnce = true;
+	private bool notifiedOfDestruction = false;
 
     //Variables for new movement of enemy 3
 
@@ -31,6 +32,7 @@ public class Enemy : MonoBehaviour {
     public bool showDmg = false;
     public Material[] materials;
     public Color[] colors;
+
 
     private BoundsCheck _bndCheck;
     
@@ -166,13 +168,16 @@ public class Enemy : MonoBehaviour {
                 health -= Main.GetWeaponDefinition(p.type).damageOnHit;
                 if(health <= 0)
                 {
+				if (!notifiedOfDestruction){
+					Main.S.shipDestroyed(this);
+				}
+				notifiedOfDestruction = true;
                     //Desotry this Enemy
                     Destroy(this.gameObject);
                     ScoreScript.scoreValue += score;
                 }
                 Destroy(otherGO);
                 break;
-
             default:
                 print("Eney hit by non-projectileHero: " + otherGO.name);
                 break;

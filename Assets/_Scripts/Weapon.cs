@@ -6,7 +6,10 @@ public enum WeaponType
 {
     none,
     blaster,
-    simple
+    simple,
+	boost,
+	fastShoot,
+	clear
 }
 [System.Serializable]
 public class WeaponDefinition
@@ -18,13 +21,14 @@ public class WeaponDefinition
     public float damageOnHit = 0;
     public float delayBetweenShots = 0;
     public float velocity = 20;
+	public string letter;
 }
 public class Weapon : MonoBehaviour {
 
     static public Transform PROJECTILE_ANCHOR;
 
     [Header("Set Dynammically")]     [SerializeField]
-    private WeaponType              _type = WeaponType.none;
+    private WeaponType _type = WeaponType.none;
     public WeaponDefinition def;
     public GameObject collar;
     public float lastShotTime;
@@ -35,7 +39,6 @@ public class Weapon : MonoBehaviour {
         collar = transform.Find("Collar").gameObject;
         _collarRend = collar.GetComponent<Renderer>();
 
-        //Call SetType() for the default _type of WeaponType.none
         SetType(_type);
 
         //Dynamicalluy create an anchor for all projectiles 
@@ -64,7 +67,6 @@ public class Weapon : MonoBehaviour {
             {
                 _type = WeaponType.simple;
                 SetType(_type);
-
             }
         }
     }
@@ -96,8 +98,8 @@ public class Weapon : MonoBehaviour {
         def = Main.GetWeaponDefinition(_type);
         _collarRend.material.color = def.color;
         lastShotTime = 0;
-
     }
+
     public void Fire()
     {
         //if this.gameObject is inactive, return
